@@ -152,8 +152,13 @@ export default function ProductEditPage({ params }: { params: { id: string } }) 
         dimensions: product.dimensions,
         weight: product.weight,
       })
+      setIsSubmitting(false)
     } else {
-      router.push("/dashboard/products")
+      // Add a small delay before redirecting to ensure the component is mounted
+      const timer = setTimeout(() => {
+        router.push("/dashboard/products")
+      }, 100)
+      return () => clearTimeout(timer)
     }
   }, [params.id, router])
 

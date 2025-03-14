@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowLeft, Edit, ExternalLink } from "lucide-react"
@@ -115,10 +114,42 @@ const products = [
 ]
 
 export default function ProductDetailsPage({ params }: { params: { id: string } }) {
+  // Find the product by ID
   const product = products.find((p) => p.id === params.id)
 
+  // If product not found, show a fallback UI instead of using notFound()
   if (!product) {
-    notFound()
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="icon" asChild>
+              <Link href="/dashboard/products">
+                <ArrowLeft className="h-4 w-4" />
+                <span className="sr-only">Back to products</span>
+              </Link>
+            </Button>
+            <h1 className="text-2xl font-bold tracking-tight">Product Not Found</h1>
+          </div>
+        </div>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <h2 className="text-xl font-semibold mb-2">The requested product could not be found</h2>
+              <p className="text-muted-foreground mb-6">
+                The product with ID "{params.id}" does not exist or has been removed.
+              </p>
+              <Button asChild>
+                <Link href="/dashboard/products">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Return to Products
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (

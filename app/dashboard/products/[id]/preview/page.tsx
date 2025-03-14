@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation"
 
 // Mock data for products (same as in products-table.tsx)
 const products = [
@@ -240,18 +241,33 @@ const products = [
 export default function ProductPreviewPage({ params }: { params: { id: string } }) {
   const [quantity, setQuantity] = useState(1)
   const [product, setProduct] = useState<any>(null)
+  const router = useRouter()
 
   useEffect(() => {
     const foundProduct = products.find((p) => p.id === params.id)
     if (foundProduct) {
       setProduct(foundProduct)
+    } else {
+      // If product not found, redirect to products page after a small delay
+      const timer = setTimeout(() => {
+        router.push("/dashboard/products")
+      }, 100)
+      return () => clearTimeout(timer)
     }
-  }, [params.id])
+  }, [params.id, router])
 
   if (!product) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
-        <p>Loading product...</p>
+        <div className="flex flex-col items-center gap-4">
+          <p>Loading product...</p>
+          <Button variant="outline" asChild>
+            <Link href="/dashboard/products">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Return to Products
+            </Link>
+          </Button>
+        </div>
       </div>
     )
   }

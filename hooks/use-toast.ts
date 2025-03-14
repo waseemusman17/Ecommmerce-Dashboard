@@ -3,7 +3,10 @@
 // Inspired by react-hot-toast library
 import * as React from "react"
 
-import type { ToastActionElement, ToastProps } from "@/components/ui/toast"
+import type {
+  ToastActionElement,
+  ToastProps,
+} from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
@@ -82,7 +85,9 @@ export const reducer = (state: State, action: Action): State => {
     case "UPDATE_TOAST":
       return {
         ...state,
-        toasts: state.toasts.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
+        toasts: state.toasts.map((t) =>
+          t.id === action.toast.id ? { ...t, ...action.toast } : t
+        ),
       }
 
     case "DISMISS_TOAST": {
@@ -106,7 +111,7 @@ export const reducer = (state: State, action: Action): State => {
                 ...t,
                 open: false,
               }
-            : t,
+            : t
         ),
       }
     }
@@ -137,47 +142,33 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-// function toast({ ...props }: Toast) {
-//   const id = genId()
+function toast({ ...props }: Toast) {
+  const id = genId()
 
-//   const update = (props: ToasterToast) =>
-//     dispatch({
-//       type: "UPDATE_TOAST",
-//       toast: { ...props, id },
-//     })
-//   const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
+  const update = (props: ToasterToast) =>
+    dispatch({
+      type: "UPDATE_TOAST",
+      toast: { ...props, id },
+    })
+  const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
 
-//   dispatch({
-//     type: "ADD_TOAST",
-//     toast: {
-//       ...props,
-//       id,
-//       open: true,
-//       onOpenChange: (open) => {
-//         if (!open) dismiss()
-//       },
-//     },
-//   })
+  dispatch({
+    type: "ADD_TOAST",
+    toast: {
+      ...props,
+      id,
+      open: true,
+      onOpenChange: (open) => {
+        if (!open) dismiss()
+      },
+    },
+  })
 
-//   return {
-//     id: id,
-//     dismiss,
-//     update,
-//   }
-// }
-
-type ToastPropsType = {
-  title: string
-  description: string
-  variant?: "default" | "destructive"
-}
-
-export function toast(props: ToastPropsType) {
-  // In a real app, this would use a toast library
-  console.log(`[Toast] ${props.variant || "default"}: ${props.title} - ${props.description}`)
-
-  // For now, we'll use alert for demonstration purposes
-  alert(`${props.title}: ${props.description}`)
+  return {
+    id: id,
+    dismiss,
+    update,
+  }
 }
 
 function useToast() {
@@ -200,5 +191,4 @@ function useToast() {
   }
 }
 
-export { useToast }
-
+export { useToast, toast }
